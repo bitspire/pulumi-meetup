@@ -39,11 +39,11 @@ export async function createRouter(
   const router = Router();
   router.use(express.json());
 
-  router.post('/gcp/functions', pulumiGcp.createHandler);
-  router.get('/gcp/functions', pulumiGcp.listHandler);
-  router.get('/gcp/functions/:id', pulumiGcp.getHandler);
-  router.put('/gcp/functions/:id', pulumiGcp.updateHandler);
-  router.delete('/gcp/functions/:id', pulumiGcp.deleteHandler);
+  router.post('/gcp/sites', pulumiGcp.createHandler);
+  router.get('/gcp/sites', pulumiGcp.listHandler);
+  router.get('/gcp/sites/:id', pulumiGcp.getHandler);
+  router.put('/gcp/sites/:id', pulumiGcp.updateHandler);
+  router.delete('/gcp/sites/:id', pulumiGcp.deleteHandler);
 
   router.post('/aws/sites', pulumiAws.createHandler);
   router.get('/aws/sites', pulumiAws.listHandler);

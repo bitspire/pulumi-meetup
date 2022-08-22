@@ -21,7 +21,7 @@ export default class PulumiAws {
 
     projectName = "tech-at-scale-pulumi";
     region = "us-east-1";
-    backendUrl = "file://~"; // For testing only, can be s3://
+    backendUrl = "file://~"; // For testing only, production can use s3://
     projectSettings: ProjectSettings;
     inlineProgramArgs: InlineProgramArgs;
     localWorkspaceOptions: LocalWorkspaceOptions;

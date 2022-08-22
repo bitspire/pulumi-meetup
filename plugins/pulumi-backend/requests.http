@@ -3,25 +3,60 @@ GET https://{{host}}/api/pulumi/health
 
 ### AWS Demo01
 
-### List all AWS deployed sites
+### List all stacks
 GET https://{{host}}/api/pulumi/aws/sites
 
-### Create AWS website
+### Create stack
 POST  https://{{host}}/api/pulumi/aws/sites
 content-type: application/json
 
 {
-    "id": "demo01",
+    "id": "aws-demo01",
     "content": "Test for Tech at Scale"
 }
 
-### Update AWS website
-PUT  https://{{host}}/api/pulumi/aws/sites/demo01
+### Update stack
+PUT  https://{{host}}/api/pulumi/aws/sites/aws-demo01
 content-type: application/json
 
 {
     "content": "[Updated] Tech at Scale Rocks!"
 }
 
-### Delete AWS website
-DELETE  https://{{host}}/api/pulumi/aws/sites/demo01
+### Get stack
+GET https://{{host}}/api/pulumi/aws/sites/aws-demo01
+
+
+### Delete stack
+DELETE  https://{{host}}/api/pulumi/aws/sites/aws-demo01
+
+
+############
+
+### GCP Demo01
+
+### List all stacks
+GET https://{{host}}/api/pulumi/gcp/sites
+
+### Create stack
+POST  https://{{host}}/api/pulumi/gcp/sites
+content-type: application/json
+
+{
+    "id": "gcp-demo01",
+    "content": "Test for Tech at Scale"
+}
+
+### Update stack
+PUT  https://{{host}}/api/pulumi/gcp/sites/gcp-demo01
+content-type: application/json
+
+{
+    "content": "[Updated] Tech at Scale Rocks!"
+}
+
+### Get stack
+GET https://{{host}}/api/pulumi/aws/sites/gcp-demo01
+
+### Delete stack
+DELETE  https://{{host}}/api/pulumi/gcp/sites/gcp-demo01

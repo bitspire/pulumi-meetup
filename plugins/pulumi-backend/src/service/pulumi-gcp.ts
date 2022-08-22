@@ -1,14 +1,17 @@
 import { Config } from "@backstage/config";
 import { Logger } from "winston";
 import { RouterOptions } from './router';
+import * as pulumi from '@pulumi/pulumi';
 import * as express from 'express';
 import {
     LocalWorkspace,
     ConcurrentUpdateError,
     StackAlreadyExistsError,
-    StackNotFoundError
+    StackNotFoundError,
+    ProjectSettings,
+    InlineProgramArgs,
+    LocalWorkspaceOptions
 } from "@pulumi/pulumi/automation";
-import * as gcp from "@pulumi/gcp";
 import { Bucket } from "@pulumi/gcp/storage";
 
 export default class PulumiGcp {
@@ -17,49 +20,85 @@ export default class PulumiGcp {
     config: Config;
 
     projectName = "tech-at-scale-pulumi";
+    gcpProject = "funbits";
+
+    region = "northamerica-northeast1";
+    backendUrl = "file://~"; // For testing only, production can use s3://
+    projectSettings: ProjectSettings;
+    inlineProgramArgs: InlineProgramArgs;
+    localWorkspaceOptions: LocalWorkspaceOptions;
 
     public constructor(options: RouterOptions) {
         const { logger, config } = options;
 
         this.logger = logger;
         this.config = config;
+
+        this.projectSettings = {
+            name: this.projectName,
+            runtime: 'nodejs',
+            backend: { url: this.backendUrl },
+        };
+
+        this.inlineProgramArgs = {
+            stackName: 'dev',
+            projectName: this.projectName,
+            program: this.createPulumiProgram('dev'),
+        };
+
+        this.localWorkspaceOptions = {
+            projectSettings: this.projectSettings,
+        };
     }
 
-    public createPulumiProgram = (content: string) => async () => {
-        const bucket = new Bucket("tech-at-scale-pulumi-meetup-001", { location: "NORTHAMERICA-NORTHEAST1" });
-
-        /**
-         * Deploy a function using an explicitly set runtime.
-         */
-
-        const runtime = "nodejs14"; // https://cloud.google.com/functions/docs/concepts/exec#runtimes
-        const explicitRuntimeGreeting = new gcp.cloudfunctions.HttpCallbackFunction(`greeting-${runtime}`, {
-            runtime: runtime,
-            bucket: bucket,
-            callback: (_req, res) => {
-                res.send(`Greetings from ${content || "Tech At Scale Meetup"}!`);
+    createPulumiProgram = (_stackName: string, _content?: string) => async () => {
+        const bucket = new Bucket("tech-at-scale-pulumi-meetup", {
+            cors: [{
+                maxAgeSeconds: 3600,
+                methods: [
+                    "GET",
+                    "HEAD",
+                    "PUT",
+                    "POST",
+                    "DELETE",
+                ],
+                origins: ["*"],
+                responseHeaders: ["*"],
+            }],
+            forceDestroy: true,
+            location: "US",
+            uniformBucketLevelAccess: true,
+            website: {
+                mainPageSuffix: "index.html",
+                notFoundPage: "404.html",
             },
         });
 
+        // TODO As exercise for the reader, put some content and upload index.html
 
         return {
-            functionUrl: explicitRuntimeGreeting.httpsTriggerUrl,
+            websiteUrl: pulumi.interpolate `http://storage.googleapis.com/${bucket.name}/index.html`,
         };
     };
+
     // creates new sites
     public createHandler: express.RequestHandler = async (req, res) => {
         const stackName = req.body.id;
         const content = req.body.content as string;
-        const projectName = this.projectName;
+
         try {
             // create a new stack
             const stack = await LocalWorkspace.createStack({
+                ...this.inlineProgramArgs,
                 stackName,
-                projectName,
                 // generate our pulumi program on the fly from the POST body
-                program: this.createPulumiProgram(content),
-            });
-            await stack.setConfig("aws:region", { value: "us-west-2" });
+                program: this.createPulumiProgram(stackName, content),
+            },
+                this.localWorkspaceOptions,
+            );
+            await stack.setConfig("gcp:region", { value: this.region });
+            await stack.setConfig("gcp:project", { value: this.gcpProject });
+
             // deploy the stack, tailing the logs to console
             const upRes = await stack.up({ onOutput: console.info });
             res.json({ id: stackName, url: upRes.outputs.websiteUrl.value });
@@ -75,7 +114,7 @@ export default class PulumiGcp {
     public listHandler: express.RequestHandler = async (_req, res) => {
         try {
             // set up a workspace with only enough information for the list stack operations
-            const ws = await LocalWorkspace.create({ projectSettings: { name: this.projectName, runtime: "nodejs" } });
+            const ws = await LocalWorkspace.create({ projectSettings: this.projectSettings });
             const stacks = await ws.listStacks();
             res.json({ ids: stacks.map(s => s.name) });
         } catch (e) {
@@ -85,15 +124,17 @@ export default class PulumiGcp {
     // gets info about a specific site
     public getHandler: express.RequestHandler = async (req, res) => {
         const stackName = req.params.id;
-        const projectName = this.projectName;
+
         try {
             // select the existing stack
             const stack = await LocalWorkspace.selectStack({
+                ...this.inlineProgramArgs,
                 stackName,
-                projectName,
                 // don't need a program just to get outputs
                 program: async () => { },
-            });
+            },
+                this.localWorkspaceOptions,
+            );
             const outs = await stack.outputs();
             res.json({ id: stackName, url: outs.websiteUrl.value });
         } catch (e) {
@@ -108,16 +149,19 @@ export default class PulumiGcp {
     public updateHandler: express.RequestHandler = async (req, res) => {
         const stackName = req.params.id;
         const content = req.body.content as string;
-        const projectName = this.projectName;
+
         try {
             // select the existing stack
             const stack = await LocalWorkspace.selectStack({
+                ...this.inlineProgramArgs,
                 stackName,
-                projectName,
                 // generate our pulumi program on the fly from the POST body
-                program: this.createPulumiProgram(content),
-            });
-            await stack.setConfig("aws:region", { value: "us-west-2" });
+                program: this.createPulumiProgram(stackName, content),
+            },
+                this.localWorkspaceOptions,
+            );
+            await stack.setConfig("gcp:region", { value: this.region });
+            await stack.setConfig("gcp:project", { value: this.gcpProject });
             // deploy the stack, tailing the logs to console
             const upRes = await stack.up({ onOutput: console.info });
             res.json({ id: stackName, url: upRes.outputs.websiteUrl.value });
@@ -134,15 +178,17 @@ export default class PulumiGcp {
     // deletes a site
     public deleteHandler: express.RequestHandler = async (req, res) => {
         const stackName = req.params.id;
-        const projectName = this.projectName;
+
         try {
             // select the existing stack
             const stack = await LocalWorkspace.selectStack({
+                ...this.inlineProgramArgs,
                 stackName,
-                projectName,
                 // don't need a program for destroy
                 program: async () => { },
-            });
+            },
+                this.localWorkspaceOptions,
+            );
             // deploy the stack, tailing the logs to console
             await stack.destroy({ onOutput: console.info });
             await stack.workspace.removeStack(stackName);
