@@ -1,6 +1,7 @@
-.input{
-    width: 100%;
+.input {
+  width: 100%;
+  margin-bottom: 50px;
 }
 .inputContainer {
-    margin-top: 25px;
+  margin-top: 25px;
 }

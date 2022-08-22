@@ -7,7 +7,7 @@ import { setupServer } from 'msw/node';
 import {
   setupRequestMockHandlers,
   renderInTestApp,
-} from "@backstage/test-utils";
+} from '@backstage/test-utils';
 
 describe('PulumiGcpComponent', () => {
   const server = setupServer();

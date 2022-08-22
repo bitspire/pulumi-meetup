@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, TextField, Link } from '@material-ui/core';
 import {
   InfoCard,
@@ -11,39 +11,42 @@ import {
   Button,
   Progress,
 } from '@backstage/core-components';
+
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 
 import './PulumiGcpComponentStyles.css';
+import { PulumiFetchComponent } from '../PulumiFetchComponent';
 
 export const PulumiGcpComponent = () => {
   const config = useApi(configApiRef);
   const backendUrl = config.getString('backend.baseUrl');
 
   const [stackName, setStackName] = useState<string>('');
+  const [content, setContent] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-  const [url, setUrl] = useState<string>('')
+  const [url, setUrl] = useState<string>('');
 
   const handleSubmit = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const response = await fetch(`${backendUrl}/api/pulumi/aws/sites`, {
         method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            id: stackName,
-            content: `Greetings from ${stackName}, welcome to Tech at Scale!`
-          }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: stackName,
+          content: content,
+        }),
       });
       const data = await response.json();
-      setUrl(data.url)
-      setLoading(false)
+      setUrl(data.url);
+      setLoading(false);
+      location.reload();
       return data;
     } catch (error) {
-      setLoading(false)
-      console.log(error)
-
+      setLoading(false);
+      console.log(error);
     }
   };
 
@@ -74,9 +77,25 @@ export const PulumiGcpComponent = () => {
                 label="Stack Name"
                 onChange={e => setStackName(e.target.value)}
               ></TextField>
+              <TextField
+                className="input"
+                label="Content"
+                onChange={e => setContent(e.target.value)}
+              ></TextField>
             </InfoCard>
 
-            {url === '' || url === undefined ? "" : <InfoCard><Link href={`${url}`} target="_blank" rel="noreferrer">{url}</Link></InfoCard>}
+            {url === '' || url === undefined ? (
+              ''
+            ) : (
+              <InfoCard>
+                <Link href={`${url}`} target="_blank" rel="noreferrer">
+                  {url}
+                </Link>
+              </InfoCard>
+            )}
+          </Grid>
+          <Grid item>
+            <PulumiFetchComponent />
           </Grid>
         </Grid>
       </Content>

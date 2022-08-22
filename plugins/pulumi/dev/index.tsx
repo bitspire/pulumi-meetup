@@ -7,6 +7,6 @@ createDevApp()
   .addPage({
     element: <PulumiPage />,
     title: 'Root Page',
-    path: '/pulumi'
+    path: '/pulumi',
   })
   .render();

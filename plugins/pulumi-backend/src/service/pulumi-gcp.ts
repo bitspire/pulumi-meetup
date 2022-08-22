@@ -20,7 +20,8 @@ export default class PulumiGcp {
     config: Config;
 
     projectName = "tech-at-scale-pulumi";
-    gcpProject = "funbits";
+    // FIXME provide correct gcp project
+    gcpProject = "<YOUR_GCP_PROJECT_HERE";
 
     region = "northamerica-northeast1";
     backendUrl = "file://~"; // For testing only, production can use s3://

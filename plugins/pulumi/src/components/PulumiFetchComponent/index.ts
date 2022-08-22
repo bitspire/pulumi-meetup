@@ -1,0 +1,1 @@
+export { PulumiFetchComponent } from './PulumiFetchComponent';
