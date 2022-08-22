@@ -9,9 +9,8 @@ import {
   HeaderLabel,
   SupportButton,
 } from '@backstage/core-components';
-import { ExampleFetchComponent } from '../ExampleFetchComponent';
 
-export const ExampleComponent = () => (
+export const PulumiGcpComponent = () => (
   <Page themeId="tool">
     <Header title="Welcome to pulumi!" subtitle="Optional subtitle">
       <HeaderLabel label="Owner" value="Team X" />
@@ -29,9 +28,7 @@ export const ExampleComponent = () => (
             </Typography>
           </InfoCard>
         </Grid>
-        <Grid item>
-          <ExampleFetchComponent />
-        </Grid>
+
       </Grid>
     </Content>
   </Page>

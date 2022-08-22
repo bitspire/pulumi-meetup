@@ -1,0 +1,1 @@
+export { PulumiGcpComponent } from './PulumiGcpComponent';

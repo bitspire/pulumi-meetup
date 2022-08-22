@@ -25,18 +25,22 @@
   "dependencies": {
     "@backstage/backend-common": "^0.15.0",
     "@backstage/config": "^1.0.1",
+    "@pulumi/aws": "^5.11.0",
+    "@pulumi/gcp": "^6.34.0",
+    "@pulumi/pulumi": "^3.38.0",
     "@types/express": "*",
+    "adm-zip": "^0.5.9",
     "express": "^4.17.1",
     "express-promise-router": "^4.1.0",
-    "winston": "^3.2.1",
     "node-fetch": "^2.6.7",
+    "winston": "^3.2.1",
     "yn": "^4.0.0"
   },
   "devDependencies": {
     "@backstage/cli": "^0.18.1",
     "@types/supertest": "^2.0.8",
-    "supertest": "^4.0.2",
-    "msw": "^0.44.0"
+    "msw": "^0.44.0",
+    "supertest": "^4.0.2"
   },
   "files": [
     "dist"

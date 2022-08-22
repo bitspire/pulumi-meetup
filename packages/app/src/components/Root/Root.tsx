@@ -28,11 +28,13 @@ import {
   sidebarConfig,
   SidebarDivider,
   SidebarGroup,
+  SidebarItem,
   SidebarPage,
   SidebarSpace,
   useSidebarOpenState,
 } from '@backstage/core-components';
 import MenuIcon from '@material-ui/icons/Menu';
+import LibraryBooks from '@material-ui/icons/LibraryBooks';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -75,7 +77,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       <SidebarDivider />
       <SidebarGroup label="Menu" icon={<MenuIcon />}>
         {/* Global nav, not org-specific */}
-
+        <SidebarItem icon={LibraryBooks} to="pulumi" text="Pulumi" />
         {/* End global nav */}
       </SidebarGroup>
       <SidebarSpace />

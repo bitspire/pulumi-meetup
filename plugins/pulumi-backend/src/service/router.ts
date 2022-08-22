@@ -15,12 +15,14 @@
  */
 
 import { errorHandler } from '@backstage/backend-common';
+import { Config } from '@backstage/config';
 import express from 'express';
 import Router from 'express-promise-router';
 import { Logger } from 'winston';
 
 export interface RouterOptions {
   logger: Logger;
+  config: Config;
 }
 
 export async function createRouter(

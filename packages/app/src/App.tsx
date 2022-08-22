@@ -7,6 +7,7 @@ import { Root } from './components/Root';
 import { AlertDisplay, OAuthRequestDialog } from '@backstage/core-components';
 import { createApp } from '@backstage/app-defaults';
 import { FlatRoutes } from '@backstage/core-app-api';
+import { PulumiPage } from '@internal/plugin-pulumi';
 
 const app = createApp({
   apis
@@ -17,7 +18,8 @@ const AppRouter = app.getRouter();
 
 const routes = (
   <FlatRoutes>
-    <Navigate key="/" to="settings" />
+    <Navigate key="/" to="pulumi" />
+    <Route path="/pulumi" element={<PulumiPage />} />
     <Route path="/settings" element={<UserSettingsPage />} />
   </FlatRoutes>
 );

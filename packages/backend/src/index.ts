@@ -23,6 +23,7 @@ import { TaskScheduler } from '@backstage/backend-tasks';
 import { Config } from '@backstage/config';
 import app from './plugins/app';
 import auth from './plugins/auth';
+import pulumi from './plugins/pulumi';
 import { PluginEnvironment } from './types';
 import { ServerPermissionClient } from '@backstage/plugin-permission-node';
 
@@ -69,10 +70,11 @@ async function main() {
 
   const authEnv = useHotMemoize(module, () => createEnv('auth'));
   const appEnv = useHotMemoize(module, () => createEnv('app'));
+  const pulumiEnv = useHotMemoize(module, () => createEnv('pulumi'));
 
   const apiRouter = Router();
   apiRouter.use('/auth', await auth(authEnv));
-
+  apiRouter.use('/pulumi', await pulumi(pulumiEnv));
 
   // Add backends ABOVE this line; this 404 handler is the catch-all fallback
   apiRouter.use(notFoundHandler());

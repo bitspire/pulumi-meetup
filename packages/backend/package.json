@@ -26,6 +26,7 @@
     "@backstage/plugin-auth-backend": "^0.15.1",
     "@backstage/plugin-permission-common": "^0.6.3",
     "@backstage/plugin-permission-node": "^0.6.4",
+    "@internal/plugin-pulumi-backend": "^0.1.0",
     "better-sqlite3": "^7.5.0",
     "dockerode": "^3.3.1",
     "express": "^4.17.1",
