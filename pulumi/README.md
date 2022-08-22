@@ -51,3 +51,21 @@ Clean up
 pulumi destroy
 
 ```
+
+## GCP CloudRun
+
+```shell
+gcloud auth application-default login
+```
+
+
+```shell
+
+export PULUMI_CONFIG_PASSPHRASE=very-long-random-pass
+
+pulumi new https://github.com/pulumi/examples/tree/master/gcp-ts-functions --dir gcp-ts-functions
+cd gcp-ts-functions
+
+pulumi up
+
+```

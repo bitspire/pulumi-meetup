@@ -8,4 +8,5 @@ with project.pkgs; [
       pulumi-bin
       awscli
       ripgrep
+      google-cloud-sdk
   ]
