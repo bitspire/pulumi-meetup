@@ -19,6 +19,8 @@ import { Config } from '@backstage/config';
 import express from 'express';
 import Router from 'express-promise-router';
 import { Logger } from 'winston';
+import PulumiAws from './pulumi-aws';
+import PulumiGcp from './pulumi-gcp';
 
 export interface RouterOptions {
   logger: Logger;
@@ -28,10 +30,26 @@ export interface RouterOptions {
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
+
   const { logger } = options;
+
+  const pulumiAws = new PulumiAws(options);
+  const pulumiGcp = new PulumiGcp(options);
 
   const router = Router();
   router.use(express.json());
+
+  router.post('/gcp/functions', pulumiGcp.createHandler);
+  router.get('/gcp/functions', pulumiGcp.listHandler);
+  router.get('/gcp/functions/:id', pulumiGcp.getHandler);
+  router.put('/gcp/functions/:id', pulumiGcp.updateHandler);
+  router.delete('/gcp/functions/:id', pulumiGcp.deleteHandler);
+
+  router.post('/aws/sites', pulumiAws.createHandler);
+  router.get('/aws/sites', pulumiAws.listHandler);
+  router.get('/aws/sites/:id', pulumiAws.getHandler);
+  router.put('/aws/sites/:id', pulumiAws.updateHandler);
+  router.delete('/aws/sites/:id', pulumiAws.deleteHandler);
 
   router.get('/health', (_, response) => {
     logger.info('PONG!');

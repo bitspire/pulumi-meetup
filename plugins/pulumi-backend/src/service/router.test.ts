@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { getVoidLogger } from '@backstage/backend-common';
+import { getVoidLogger, loadBackendConfig } from '@backstage/backend-common';
 import express from 'express';
 import request from 'supertest';
 
@@ -22,10 +22,13 @@ import { createRouter } from './router';
 
 describe('createRouter', () => {
   let app: express.Express;
+  const defaultConfig = async () =>
+    await loadBackendConfig({ logger: getVoidLogger(), argv: process.argv });
 
   beforeAll(async () => {
     const router = await createRouter({
       logger: getVoidLogger(),
+      config: await defaultConfig()
     });
     app = express().use(router);
   });

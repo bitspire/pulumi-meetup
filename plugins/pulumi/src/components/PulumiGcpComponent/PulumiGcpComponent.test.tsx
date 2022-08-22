@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExampleComponent } from './PulumiGcpComponent';
+import { PulumiGcpComponent } from './PulumiGcpComponent';
 import { ThemeProvider } from '@material-ui/core';
 import { lightTheme } from '@backstage/theme';
 import { rest } from 'msw';
@@ -9,7 +9,7 @@ import {
   renderInTestApp,
 } from "@backstage/test-utils";
 
-describe('ExampleComponent', () => {
+describe('PulumiGcpComponent', () => {
   const server = setupServer();
   // Enable sane handlers for network requests
   setupRequestMockHandlers(server);
@@ -24,7 +24,7 @@ describe('ExampleComponent', () => {
   it('should render', async () => {
     const rendered = await renderInTestApp(
       <ThemeProvider theme={lightTheme}>
-        <ExampleComponent />
+        <PulumiGcpComponent />
       </ThemeProvider>,
     );
     expect(rendered.getByText('Welcome to pulumi!')).toBeInTheDocument();

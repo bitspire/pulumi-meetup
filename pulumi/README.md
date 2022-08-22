@@ -19,6 +19,8 @@ export PULUMI_CONFIG_PASSPHRASE=very-long-random-pass
 pulumi new https://github.com/pulumi/examples/tree/master/aws-ts-s3-lambda-copyzip --dir aws-s3-lambda
 cd aws-s3-lambda
 
+pulumi config set aws:region us-east-1
+
 ```
 
 Upgrade and install dependencies
@@ -65,6 +67,9 @@ export PULUMI_CONFIG_PASSPHRASE=very-long-random-pass
 
 pulumi new https://github.com/pulumi/examples/tree/master/gcp-ts-functions --dir gcp-ts-functions
 cd gcp-ts-functions
+
+pulumi config set gcp:project <projectname>
+pulumi config set gcp:region <region>
 
 pulumi up
 
