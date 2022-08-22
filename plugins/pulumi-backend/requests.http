@@ -1,0 +1,27 @@
+### Plulumi health check
+GET https://{{host}}/api/pulumi/health
+
+### AWS Demo01
+
+### List all AWS deployed sites
+GET https://{{host}}/api/pulumi/aws/sites
+
+### Create AWS website
+POST  https://{{host}}/api/pulumi/aws/sites
+content-type: application/json
+
+{
+    "id": "demo01",
+    "content": "Test for Tech at Scale"
+}
+
+### Update AWS website
+PUT  https://{{host}}/api/pulumi/aws/sites/demo01
+content-type: application/json
+
+{
+    "content": "[Updated] Tech at Scale Rocks!"
+}
+
+### Delete AWS website
+DELETE  https://{{host}}/api/pulumi/aws/sites/demo01
