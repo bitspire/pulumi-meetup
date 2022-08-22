@@ -8,10 +8,11 @@ const tpsReports = new aws.s3.Bucket("tpsReports");
 const tpsZips = new aws.s3.Bucket("tpsZips");
 
 // Anytime a new TPS Report is uploaded, archive it in a zipfile.
-tpsReports.onObjectCreated("zipTpsReports", async (e) => {
+const subscription = tpsReports.onObjectCreated("zipTpsReports", async (e) => {
     const admZip = require("adm-zip");
     const s3 = new aws.sdk.S3();
     for (const rec of e.Records || []) {
+        console.log(`Pulumi Rocks!`);
         const zip = new admZip();
         const [ buck, key ] = [ rec.s3.bucket.name, rec.s3.object.key ];
         console.log(`Zipping ${buck}/${key} into ${tpsZips.bucket.get()}/${key}.zip`);
@@ -28,3 +29,4 @@ tpsReports.onObjectCreated("zipTpsReports", async (e) => {
 // Finally, export the zipfile bucket name, for ease of access.
 export const tpsReportsBucket = tpsReports.bucket;
 export const tpsZipsBucket = tpsZips.bucket;
+export const lambdaFunction = subscription.func.arn;

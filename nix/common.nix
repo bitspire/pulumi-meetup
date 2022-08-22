@@ -6,4 +6,6 @@ with project.pkgs; [
       git
       niv
       pulumi-bin
+      awscli
+      ripgrep
   ]
