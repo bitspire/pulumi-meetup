@@ -2,6 +2,7 @@ import { Config } from "@backstage/config";
 import { Logger } from "winston";
 import { RouterOptions } from './router';
 import * as express from 'express';
+import * as pulumi from '@pulumi/pulumi';
 import {
     LocalWorkspace,
     ConcurrentUpdateError,
@@ -92,7 +93,7 @@ export default class PulumiAws {
         });
 
         return {
-            websiteUrl: siteBucket.websiteEndpoint,
+            websiteUrl: pulumi.interpolate `http://${siteBucket.websiteEndpoint}`,
         };
     };
     // creates new sites

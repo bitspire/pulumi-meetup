@@ -60,3 +60,4 @@ GET https://{{host}}/api/pulumi/aws/sites/gcp-demo01
 
 ### Delete stack
 DELETE  https://{{host}}/api/pulumi/gcp/sites/gcp-demo01
+
